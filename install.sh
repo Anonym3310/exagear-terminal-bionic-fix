@@ -15,9 +15,10 @@
 #Опции:
 #
 # -c    Укажите имя используемого АПК ExaGer.
-#	По умолчанию установлен com.hugo305.benchmark
+#	По умолчанию установленo com.hugo305.benchmark
 #
 # -h 	Показывает это вспомогательное сообщение
+#
 #---help---
 
 usage()
@@ -64,16 +65,11 @@ done
 
 rm -f /etc/resolv.conf && echo "nameserver 1.1.1.1" >> /etc/resolv.conf
 apt update
-apt install binfmt-support qemu qemu-kvm qemu-user-static wget unzip -y
+apt install binfmt-support qemu qemu-kvm qemu-user-static unzip -y
 update-binfmts --enable qemu-i386
-mkdir /data
 ln -sfnv /data/data/${EXAGEAR_CACHE}/files/image/ exagear-chroot
 cp /usr/bin/qemu-i386-static exagear-chroot/usr/bin/
-mkdir exagear-chroot/sdcard
-wget https://github.com/Anonym3310/exagear-terninal-bionic-fix/blob/master/exagear-terminal-bionic-fix.zip?raw=true
-mv "exagear-terminal-bionic-fix.zip?raw=true" exagear-terminal-bionic-fix.zip
 unzip exagear-terminal-bionic-fix.zip
-rm exagear-terminal-bionic-fix.zip
 cp -r exagear-terminal-bionic-fix exagear-chroot/root/
 rm -rf exagear-terminal-bionic-fix
 
