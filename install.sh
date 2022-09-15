@@ -63,7 +63,6 @@ done
 
 : ${EXAGEAR_CACHE:="com.hugo305.benchmark"}
 
-rm -f /etc/resolv.conf && echo "nameserver 1.1.1.1" >> /etc/resolv.conf
 apt update
 apt install binfmt-support qemu qemu-kvm qemu-user-static unzip -y
 update-binfmts --enable qemu-i386
