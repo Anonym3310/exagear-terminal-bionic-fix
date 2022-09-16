@@ -1,0 +1,6 @@
+        #!/bin/bash
+        set -e
+umount exagear-chroot/dev/
+umount exagear-chroot/sys/
+umount exagear-chroot/proc/
+umount exagear-chroot/sdcard/

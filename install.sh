@@ -35,7 +35,6 @@ gen_chroot_script()
 	mount --bind /dev/ exagear-chroot/dev
 	mount --bind /sys exagear-chroot/sys
 	mount --bind /proc exagear-chroot/proc
-	mount --bind /sdcard exagear-chroot/sdcard
 	chroot exagear-chroot
 	EOF
 }
@@ -49,7 +48,6 @@ gen_chroot_script2()
 	umount exagear-chroot/dev/
 	umount exagear-chroot/sys/
 	umount exagear-chroot/proc/
-	umount exagear-chroot/sdcard/
 	EOF
 }
 
