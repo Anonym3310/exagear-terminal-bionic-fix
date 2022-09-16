@@ -45,9 +45,9 @@ gen_chroot_script2()
 	cat <<-EOF
         #!/bin/bash
         set -e
-	umount exagear-chroot/dev/
-	umount exagear-chroot/sys/
-	umount exagear-chroot/proc/
+	umount -l exagear-chroot/dev/
+	umount -l exagear-chroot/sys/
+	umount -l exagear-chroot/proc/
 	EOF
 }
 
