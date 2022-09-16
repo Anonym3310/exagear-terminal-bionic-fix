@@ -7,6 +7,8 @@
 # -c 	Specify the name of the ExaGer APK you are using.
 #    	The default is com.hugo305.benchmark
 #
+# -f	Fixes apt in ExaGear cache
+#
 # -h 	Show this help message and exit.
 #
 #
@@ -16,6 +18,8 @@
 #
 # -c    Укажите имя используемого АПК ExaGer.
 #	По умолчанию установленo com.hugo305.benchmark
+#
+# -f	Исправляет apt в кеше ExaGear
 #
 # -h 	Показывает это вспомогательное сообщение
 #
@@ -52,9 +56,10 @@ gen_chroot_script2()
 }
 
 
-while getopts 'c:h' OPTION; do
+while getopts 'c:f:h' OPTION; do
         case "$OPTION" in
         c) EXAGEAR_CACHE="$OPTARG";;
+	f) FIX_APT=1 ;;
         h) usage; exit 0;;
         esac
 done
@@ -66,17 +71,16 @@ apt install binfmt-support qemu qemu-kvm qemu-user-static unzip -y
 update-binfmts --enable qemu-i386
 ln -sfnv /data/data/${EXAGEAR_CACHE}/files/image/ exagear-chroot
 cp /usr/bin/qemu-i386-static exagear-chroot/usr/bin/
-unzip exagear-terminal-bionic-fix.zip
-cp -r exagear-terminal-bionic-fix exagear-chroot/root/
-rm -rf exagear-terminal-bionic-fix
-
 gen_chroot_script > enter-exagear-chroot
 chmod +x enter-exagear-chroot
 gen_chroot_script2 > unmount-exagear-chroot
 chmod +x unmount-exagear-chroot
+if [$FIX_APT -eq 1]
+then
+unzip exagear-terminal-bionic-fix.zip
+cp -r exagear-terminal-bionic-fix exagear-chroot/root/
+rm -rf exagear-terminal-bionic-fix
 ./enter-exagear-chroot <<-EOF
-	#!/bin/bash
-	set -e
 	unset ANDROID_ART_ROOT
 	unset ANDROID_DATA
 	unset ANDROID_ROOT
@@ -96,6 +100,20 @@ chmod +x unmount-exagear-chroot
 	cd && rm -rf /root/exagear-terminal-bionic-fix
 	exit
 	EOF
+else
+./enter-exagear-chroot <<-EOF
+        unset ANDROID_ART_ROOT
+        unset ANDROID_DATA
+        unset ANDROID_ROOT
+        unset LD_PRELOAD
+        unset PREFIX
+        unset TMPDIR
+
+	apt update
+        apt install -f -y
+	exit
+	EOF
+fi
 ./unmount-exagear-chroot
 echo "RU Исправление apt законченно"
 echo "RU Для входа в exagear-chroot используйте скрипт enter-exagear-chroot"
