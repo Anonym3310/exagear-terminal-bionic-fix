@@ -1,7 +1,0 @@
-#!/bin/bash
-set -e
-mount --bind /dev/ exagear-chroot/dev
-mount --bind /sys exagear-chroot/sys
-mount --bind /proc exagear-chroot/proc
-mount --bind /sdcard exagear-chroot/sdcard
-chroot exagear-chroot
