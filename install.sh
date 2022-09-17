@@ -100,6 +100,11 @@ rm -rf exagear-terminal-bionic-fix
 	cd && rm -rf /root/exagear-terminal-bionic-fix
 	exit
 	EOF
+echo ""
+echo "RU Исправление apt законченно"
+echo ""
+echo "EN apt fix complete"
+echo ""
 else
 ./enter-exagear-chroot <<-EOF
         unset ANDROID_ART_ROOT
@@ -115,7 +120,6 @@ else
 	EOF
 fi
 ./unmount-exagear-chroot
-echo "RU Исправление apt законченно"
 echo "RU Для входа в exagear-chroot используйте скрипт enter-exagear-chroot"
 echo "RU Никогда не выполняйте следующие команды: apt upgrade apt full-upgrade apt dist-upgrade"
 echo "RU Сразу после входа в exagear-chroot всегда вводите эти команды:"
@@ -127,7 +131,6 @@ echo "unset PREFIX"
 echo "unset TMPDIR"
 echo "Всегда после выхода из exagear-chroot не забудьте выполнить скрипт  unmount-exagear-chroot"
 echo ""
-echo "EN apt fix complete"
 echo "EN To enter the exagear-chroot, use the enter-exagear-chroot script"
 echo "EN Never run the following commands: apt upgrade apt full-upgrade apt dist-upgrade"
 echo "EN Immediately after entering exagear-chroot, always enter these commands:"
