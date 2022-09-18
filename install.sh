@@ -4,24 +4,24 @@
 #
 #Options:
 #
-# -c 	Specify the name of the ExaGer APK you are using.
-#    	The default is com.hugo305.benchmark
+# -c 		Specify the name of the ExaGer APK you are using.
+#    		The default is com.hugo305.benchmark
 #
-# -f	Fixes apt in ExaGear cache
+# -f yes	Fixes apt in ExaGear cache
 #
-# -h 	Show this help message and exit.
+# -h 		Show this help message and exit.
 #
 #
 # Использование: exagear-terminal-bionic-fix-install [параметры]
 #
 #Опции:
 #
-# -c    Укажите имя используемого АПК ExaGer.
-#	По умолчанию установленo com.hugo305.benchmark
+# -c    	Укажите имя используемого АПК ExaGer.
+#		По умолчанию установленo com.hugo305.benchmark
 #
-# -f	Исправляет apt в кеше ExaGear
+# -f yes	Исправляет apt в кеше ExaGear
 #
-# -h 	Показывает это вспомогательное сообщение
+# -h 		Показывает это вспомогательное сообщение
 #
 #---help---
 
@@ -55,38 +55,41 @@ gen_chroot_script2()
 	EOF
 }
 
+: ${EXAGEAR_CACHE:="com.hugo305.benchmark"}
 
-while getopts 'c:f:h' OPTION; do
-        case "$OPTION" in
-        c) EXAGEAR_CACHE="$OPTARG";;
-	f) FIX_APT=1 ;;
-        h) usage; exit 0;;
+while getopts ":c:f:h:" OPTION; do
+        case "${OPTION}" in
+        c) EXAGEAR_CACHE=${OPTARG};;
+	f) FIX_APT=${OPTARG} ;;
+        h | --help) usage; exit 0;;
         esac
 done
 
-: ${EXAGEAR_CACHE:="com.hugo305.benchmark"}
+echo "$EXAGEAR_CACHE"
+echo "$FIX_APT"
 
 apt update
 apt install binfmt-support qemu qemu-kvm qemu-user-static unzip -y
 update-binfmts --enable qemu-i386
 ln -sfnv /data/data/${EXAGEAR_CACHE}/files/image/ exagear-chroot
+if [ -d "exagear-chroot/dev" ]
+then
+echo
+else
+mkdir exagear-chroot/dev
+fi
 cp /usr/bin/qemu-i386-static exagear-chroot/usr/bin/
 gen_chroot_script > enter-exagear-chroot
 chmod +x enter-exagear-chroot
 gen_chroot_script2 > unmount-exagear-chroot
 chmod +x unmount-exagear-chroot
-if [$FIX_APT -eq 1]
+if [ "${FIX_APT}" == "yes" ]
 then
 unzip exagear-terminal-bionic-fix.zip
 cp -r exagear-terminal-bionic-fix exagear-chroot/root/
 rm -rf exagear-terminal-bionic-fix
 ./enter-exagear-chroot <<-EOF
-	unset ANDROID_ART_ROOT
 	unset ANDROID_DATA
-	unset ANDROID_ROOT
-	unset LD_PRELOAD
-	unset PREFIX
-	unset TMPDIR
 
 	cd /root/exagear-terminal-bionic-fix/
 	chmod +x *
@@ -107,12 +110,7 @@ echo "EN apt fix complete"
 echo ""
 else
 ./enter-exagear-chroot <<-EOF
-        unset ANDROID_ART_ROOT
         unset ANDROID_DATA
-        unset ANDROID_ROOT
-        unset LD_PRELOAD
-        unset PREFIX
-        unset TMPDIR
 
 	apt update
         apt install -f -y
@@ -120,26 +118,18 @@ else
 	EOF
 fi
 ./unmount-exagear-chroot
+echo ""
+echo ""
 echo "RU Для входа в exagear-chroot используйте скрипт enter-exagear-chroot"
 echo "RU Никогда не выполняйте следующие команды: apt upgrade apt full-upgrade apt dist-upgrade"
 echo "RU Сразу после входа в exagear-chroot всегда вводите эти команды:"
-echo "unset ANDROID_ART_ROOT"
 echo "unset ANDROID_DATA"
-echo "unset ANDROID_ROOT"
-echo "unset LD_PRELOAD"
-echo "unset PREFIX"
-echo "unset TMPDIR"
 echo "Всегда после выхода из exagear-chroot не забудьте выполнить скрипт  unmount-exagear-chroot"
 echo ""
 echo "EN To enter the exagear-chroot, use the enter-exagear-chroot script"
 echo "EN Never run the following commands: apt upgrade apt full-upgrade apt dist-upgrade"
 echo "EN Immediately after entering exagear-chroot, always enter these commands:"
-echo "unset ANDROID_ART_ROOT"
 echo "unset ANDROID_DATA"
-echo "unset ANDROID_ROOT"
-echo "unset LD_PRELOAD"
-echo "unset PREFIX"
-echo "unset TMPDIR"
 echo "Always remember to run the unmount-exagear-chroot script after exiting exagear-chroot"
 echo ""
 echo ""
